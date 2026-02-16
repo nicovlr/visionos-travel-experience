@@ -13,19 +13,23 @@ struct ContentView: View {
             if let dest = appModel.selectedDestination {
                 DestinationDetailPanel(destination: dest)
             } else {
-                Text("Select a destination")
-                    .font(.title2)
-                    .foregroundStyle(.secondary)
+                ContentUnavailableView(
+                    "Select a Destination",
+                    systemImage: "globe.europe.africa",
+                    description: Text("Choose a destination from the list to explore.")
+                )
             }
         }
         .toolbar {
             ToolbarItem(placement: .bottomOrnament) {
                 HStack(spacing: 16) {
                     toggleImmersiveButton
-                    // TODO: add filter/sort controls here
                 }
                 .padding(.horizontal, 20)
             }
+        }
+        .task {
+            await appModel.loadDestinations()
         }
     }
 
@@ -59,5 +63,8 @@ struct ContentView: View {
             )
         }
         .disabled(appModel.immersiveSpaceState == .inTransition)
+        .accessibilityHint(appModel.immersiveSpaceState == .open
+            ? "Double-tap to close the immersive globe view"
+            : "Double-tap to open an immersive 3D globe")
     }
 }
