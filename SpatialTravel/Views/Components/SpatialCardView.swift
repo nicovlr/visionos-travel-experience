@@ -9,7 +9,6 @@ struct SpatialCardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // image placeholder
             RoundedRectangle(cornerRadius: 10)
                 .fill(.ultraThinMaterial)
                 .frame(height: 120)
@@ -31,8 +30,10 @@ struct SpatialCardView: View {
         .hoverEffect(.lift)
         .scaleEffect(isSelected ? 1.05 : 1.0)
         .animation(.spring(response: 0.3), value: isSelected)
-        .onTapGesture {
-            onTap()
-        }
+        .onTapGesture { onTap() }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(destination.name), \(destination.country)")
+        .accessibilityHint("Double-tap to view destination details")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
