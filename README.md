@@ -1,21 +1,46 @@
 # SpatialTravel
 
-Immersive spatial app prototype for Apple Vision Pro — exploring AR interactions for travel information display.
+A visionOS spatial computing prototype built for Apple Vision Pro. Explore travel destinations in an immersive 3D environment using gaze, gestures, and spatial interactions.
 
-## Overview
+Built with **SwiftUI**, **RealityKit**, and the **visionOS SDK**.
 
-SpatialTravel lets users explore destinations in an immersive 3D environment. Built with RealityKit and SwiftUI, the app uses spatial computing to create an intuitive travel browsing experience.
+## Features
 
-## Features (WIP)
+- **Immersive 3D Globe** — Interactive globe entity built with RealityKit, with destination pins placed using geographic coordinate mapping
+- **Spatial Gestures** — Drag to rotate the globe, tap to select destinations via `SpatialTapGesture` and `DragGesture` targeted to entities
+- **Mixed Immersion** — Seamless transitions between windowed and immersive spaces using `ImmersiveSpace` scenes
+- **Spatial UI Panels** — `NavigationSplitView` with detail panels, ornament toolbar, and material-based card components
+- **Flight Path Visualization** — Arc point generation between destinations using SLERP interpolation on a unit sphere
+- **Spatial Math Utilities** — Geographic-to-cartesian conversion, haversine distance calculation, great circle arc generation with `simd`
 
-- [x] Basic spatial window layout
-- [x] Destination card components
-- [x] Gesture-based navigation (tap, pinch, drag)
-- [ ] Immersive space with 3D globe
-- [ ] Destination detail panels with volumetric content
-- [ ] Flight path visualization
-- [ ] Spatial audio for ambient sounds
-- [ ] Hand tracking interactions
+## Architecture
+
+MVVM with a protocol-based service layer. State management via `@Observable` and SwiftUI `@Environment`.
+
+```
+SpatialTravel/
+├── App/              # App entry point, scene definitions, observable state
+├── Models/           # Data models (Destination, Coordinate, PriceRange)
+├── Services/         # Protocol-based data layer with async interface
+├── Utilities/        # Spatial math (SIMD3, SLERP, haversine)
+└── Views/
+    ├── Components/   # Reusable spatial card with hover/spring animations
+    ├── Immersive/    # RealityKit immersive scene (globe, pins, gestures)
+    └── Panels/       # 2D window panels (list, detail, custom FlowLayout)
+```
+
+## Technical Highlights
+
+| Area | Implementation |
+|------|---------------|
+| Scene Management | `WindowGroup` + `ImmersiveSpace` with `.mixed` immersion style |
+| State | `@Observable` class with environment injection |
+| 3D Rendering | RealityKit entities with `PhysicallyBasedMaterial` |
+| Input Handling | `SpatialTapGesture`, `DragGesture` targeted to entities via `InputTargetComponent` |
+| Collision | `CollisionComponent` with sphere shapes for spatial hit testing |
+| Math | `simd` framework — `SIMD3<Float>`, quaternion rotation, SLERP interpolation |
+| Layout | Custom `FlowLayout` conforming to SwiftUI `Layout` protocol |
+| Testing | Unit tests for spatial math (coordinate conversion, haversine distance, arc generation) |
 
 ## Requirements
 
@@ -23,23 +48,6 @@ SpatialTravel lets users explore destinations in an immersive 3D environment. Bu
 - visionOS 1.0+ SDK
 - Apple Vision Pro simulator or device
 
-## Architecture
+## Context
 
-MVVM with a service layer. Views are split between immersive content (RealityKit) and 2D panels (SwiftUI).
-
-```
-SpatialTravel/
-├── App/              # App entry, scenes
-├── Views/
-│   ├── Immersive/    # RealityKit immersive views
-│   ├── Panels/       # 2D window panels
-│   └── Components/   # Reusable UI bits
-├── Models/           # Data models
-├── Services/         # API, data loading
-├── Resources/        # Assets, USDZ files
-└── Utilities/        # Extensions, helpers
-```
-
-## Notes
-
-Still early — focusing on getting the spatial interactions right before adding more destinations. The gesture system needs work for edge cases (two-hand gestures especially).
+Built during an R&D exploration of spatial computing UX patterns for travel applications — combining spatial interactions (gaze, gesture, hand tracking) with information display in mixed reality environments.
